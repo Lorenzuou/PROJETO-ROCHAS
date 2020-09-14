@@ -30,6 +30,12 @@ class CavaleteController {
    * @param {View} ctx.view
    */
   async create ({ request, response, view }) {
+    const data = request.except(["token"]);
+    console.log(data);
+    const cavalete = await Cavalete.create(data)
+
+    return response.send(cavalete);
+  
   }
 
   /**
@@ -53,6 +59,9 @@ class CavaleteController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
+    const cavalete = Cavalete.find(params.id); 
+  
+    return response.send(cavalete); 
   }
 
   /**
@@ -65,6 +74,15 @@ class CavaleteController {
    * @param {View} ctx.view
    */
   async edit ({ params, request, response, view }) {
+    const data = request.except(["token"]);
+    const cavalete = Cavalete.find(params.id); 
+    if(cavalete.user_id ==! auth.user.id) {
+      return response.status(401);
+    }
+    cavalete.content = data['content'];
+    cavalete.save();
+    return response.send(cavalete); 
+
   }
 
   /**
@@ -87,7 +105,16 @@ class CavaleteController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+    const chapa = await Chapa.findOrFail(params.id);
+    console.log(auth.user.id)
+    
+    if(chapa.user_id ==! auth.user.id) {
+      return response.status(401);
+    }
+
+    return chapa.delete()
   }
-}
+  }
+
 
 module.exports = CavaleteController

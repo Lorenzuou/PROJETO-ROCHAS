@@ -30,6 +30,12 @@ class ChapaController {
    * @param {View} ctx.view
    */
   async create ({ request, response, view }) {
+    const data = request.except(["token"]);
+    console.log(data);
+    const Chapa = await chapa.create(data)
+
+    return response.send(Chapa);
+  
   }
 
   /**
@@ -53,6 +59,9 @@ class ChapaController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
+    const chapa = Chapa.find(params.id); 
+  
+    return response.send(chapa); 
   }
 
   /**
@@ -65,6 +74,15 @@ class ChapaController {
    * @param {View} ctx.view
    */
   async edit ({ params, request, response, view }) {
+    const data = request.except(["token"]);
+    const chapa = Chapa.find(params.id); 
+    if(chapa.user_id ==! auth.user.id) {
+      return response.status(401);
+    }
+    chapa.content = data['content'];
+    chapa.save();
+    return response.send(chapa); 
+
   }
 
   /**

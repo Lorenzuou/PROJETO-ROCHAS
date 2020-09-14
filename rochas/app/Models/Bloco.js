@@ -7,9 +7,7 @@ const Model = use('Model')
 class Bloco extends Model {
 
 
-    users () {
-        return this.belongsTo('App/Models/User')
-      }
+
     
 
     chapas () {

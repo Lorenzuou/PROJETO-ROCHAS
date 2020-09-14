@@ -8,14 +8,15 @@ class BlocoSchema extends Schema {
     this.create('blocos', (table) => {
       table.increments()
       table
-        .integer('id_usuario')
+        .integer("id_usuario")
         .unsigned()
-        .references('id')
+        .notNullable()
+        .references("id")
         .inTable('users')
         .onUpdate('CASCADE')
-        .onDelete('CASCADE')
-      table.string('nome').notNullable().unique()
-      table.string('origem')
+        .onDelete('CASCADE');
+      table.string('nome').notNullable().unique();
+      table.string('origem');
 
       table.timestamps()
     })

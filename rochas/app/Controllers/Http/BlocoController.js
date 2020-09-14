@@ -8,7 +8,7 @@
  * Resourceful controller for interacting with blocos
  */
 
-const Bloco = use("App/Models/User")
+const Bloco = use("App/Models/Bloco")
 class BlocoController {
   /**
    * Show a list of all blocos.
@@ -33,10 +33,10 @@ class BlocoController {
    */
   async create ({ request, response, view }) {
     const data = request.except(["token"]);
-    console.log(data)
+    console.log(data);
     const bloco = await Bloco.create(data)
 
-    return bloco
+    return response.send(bloco);
 
   }
 
@@ -61,6 +61,10 @@ class BlocoController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
+    const bloco = Bloco.find(params.id); 
+  
+    return response.send(bloco); 
+
   }
 
   /**
@@ -72,7 +76,16 @@ class BlocoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async edit ({ params, request, response, view }) {
+  async edit ({ params, request, response }) {
+    const data = request.only(["content"]);
+    const bloco = Bloco.find(params.id); 
+    if(bloco.user_id ==! auth.user.id) {
+      return response.status(401);
+    }
+    bloco.content = data['content'];
+    bloco.save();
+    return response.send(bloco); 
+
   }
 
   /**
@@ -94,7 +107,15 @@ class BlocoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params, response }) {
+    const bloco = await bloco.findOrFail(params.id);
+    console.log(auth.user.id)
+    
+    if(bloco.user_id ==! auth.user.id) {
+      return response.status(401);
+    }
+
+    return bloco.delete()
   }
 }
 
